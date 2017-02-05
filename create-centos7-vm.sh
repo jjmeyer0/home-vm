@@ -106,6 +106,7 @@ echo "*  renice -10" >>/etc/security/limits.conf || true
 setenforce 0 || true
 sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux && cat /etc/sysconfig/selinux
 chkconfig ntpd on || true
+service ntpd start || true
 
 #chvt 3
 
