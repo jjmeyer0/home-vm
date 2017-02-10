@@ -1,13 +1,15 @@
 name=$1
-passw=$2
+host=$2
+passw=$3
 
 if [ -z $name ]; then echo 'Must specify a name for the vm.' ; exit 1; fi
+if [ -z $host ]; then echo 'Please supply a hosti  (eg. jj.com).' ; exit 1; fi
 if [ -z $passw ]; then echo 'Please supply a password.' ; exit 1; fi
 
 # openssl passwd -1 "password here" --> taken from https://thornelabs.net/2014/02/03/hash-roots-password-in-rhel-and-centos-kickstart-profiles.html
 root_pass=$(openssl passwd -1 "${passw}")
 
-cat <<EOT >> /tmp/${name}.ks
+cat <<EOT > /tmp/${name}.ks
 # Kickstat file manually created by Neil Watson.
 cmdline
 install
@@ -30,7 +32,7 @@ poweroff
 #
 # Network settings TODO
 #
-network --device=eth0 --bootproto=dhcp  --hostname=${name}.jj.com
+network --device=eth0 --bootproto=dhcp  --hostname=${name}.${host}
 # Not shown, but configure ipv6 in the %post section.
 
 #
@@ -105,8 +107,13 @@ echo "*  renice -10" >>/etc/security/limits.conf || true
 #echo "ttyS0" >> /etc/securetty || true
 setenforce 0 || true
 sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/sysconfig/selinux && cat /etc/sysconfig/selinux
-chkconfig ntpd on || true
-service ntpd start || true
+systemctl enable ntpd || true
+systemctl start ntpd || true
+
+echo 'NETWORKING=yes' > /etc/sysconfig/network
+echo 'HOSTNAME=${name}.${host}' >> /etc/sysconfig/network
+
+hostname ${name}.${host}
 
 #chvt 3
 
@@ -114,23 +121,23 @@ service ntpd start || true
 # SSH TODO
 #
 
-if [ "${name}" == 'node00' ] ;
+if [ "${name}" == 'node000' ] ;
 then
 
-cat <<IDRSAEOT >> /root/enable-ssh.sh
+cat <<IDRSAEOT > /root/enable-ssh.sh
 ssh-keygen
 
 hosts=(
-node01
-node02
-node03
-node04
-node05
-node06
-node07
-node08
-node09
-node10
+node001
+node002
+node003
+node004
+node005
+node006
+node007
+node008
+node009
+node010
 )
 
 for node in "\${hosts[@]}"
