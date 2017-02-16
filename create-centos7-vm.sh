@@ -160,13 +160,13 @@ fi
 %end
 EOT
 
-/usr/bin/qemu-img create -f qcow2 -o preallocation=metadata /var/lib/libvirt/images/$name.qcow2 46G
+/usr/bin/qemu-img create -f qcow2 -o preallocation=metadata /home/data/vm/images/$name.qcow2 46G
 virt-install --connect=qemu:///system \
     --network=bridge:br0 \
     --initrd-inject=/tmp/${name}.ks \
     --extra-args="ks=file:/${name}.ks console=tty0 console=ttyS0,115200" \
     --name=${name} \
-    --disk path=/var/lib/libvirt/images/${name}.qcow2,format=qcow2 \
+    --disk path=/home/data/vm/images/${name}.qcow2,format=qcow2 \
     --ram 4096 \
     --vcpus=1 \
     --hvm \
