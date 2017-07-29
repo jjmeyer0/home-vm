@@ -2,9 +2,9 @@ name=$1
 host=$2
 passw=$3
 
-if [ -z $name ]; then echo 'Must specify a name for the vm.' ; exit 1; fi
-if [ -z $host ]; then echo 'Please supply a hosti  (eg. jj.com).' ; exit 1; fi
-if [ -z $passw ]; then echo 'Please supply a password.' ; exit 1; fi
+HELP_INFO="Usage: $0 <vm-name> <vm host> <password>"
+
+if [ -z $name ] || [ -z $host ] || [ -z $passw ]; then echo ${HELP_INFO} ; exit 1; fi
 
 # openssl passwd -1 "password here" --> taken from https://thornelabs.net/2014/02/03/hash-roots-password-in-rhel-and-centos-kickstart-profiles.html
 root_pass=$(openssl passwd -1 "${passw}")
